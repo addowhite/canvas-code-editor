@@ -1,0 +1,16 @@
+{
+  "name": "canvas-code-editor",
+  "version": "0.0.1",
+  "description": "A code editor using HTML5 canvas.",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-packager . editor --asar --overwrite --platform=darwin --arch=x64 --prune=true --out=build"
+  },
+  "author": "Addo White <addowhite@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "electron-packager": "^11.1.0",
+    "electron": "^1.4.13"
+  }
+}

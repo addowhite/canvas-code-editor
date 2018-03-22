@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Editor</title>
+  <script type="text/javascript" src="src/Editor.js"></script>
+  <script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', () => {
+    let editor = Swish.edit('editor')
+    editor.setText(`class Document {
+
+  constructor() {
+    this.lines = []
+  }
+
+  getText() {
+    return this.lines.join('\\n')
+  }
+
+  setText(str) {
+    this.lines = str.split(/\\r|\\n|\\r\\n/g)
+  }
+
+  forEach(func) {
+    this.lines.forEach(func)
+  }
+
+}`)
+  })
+  </script>
+  <style type="text/css">
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  #editor {
+    width: 100%;
+    height: 100%;
+  }
+  </style>
+</head>
+
+<body>
+  <div id="editor"></div>
+</body>
+
+</html>
