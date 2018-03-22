@@ -5,12 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-packager . editor --asar --overwrite --platform=darwin --arch=x64 --prune=true --out=build"
+    "build:mac": "electron-packager . editor --asar --overwrite --platform=darwin --arch=x64 --prune=true --out=build",
+    "build:win": "electron-packager . editor --asar --overwrite --platform=win32 --arch=ia32   --prune=true --out=build"
   },
   "author": "Addo White <addowhite@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "electron-packager": "^11.1.0",
-    "electron": "^1.4.13"
+    "electron": "^1.8.4"
   }
 }
