@@ -2,6 +2,50 @@ const Swish = {};
 
 (() => {
 
+  const Easing = {
+    linear: t => t,
+    easeInQuad: t => t * t,
+    easeOutQuad: t => t * (2 - t),
+    easeInOutQuad: t => t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t,
+    easeInCubic: t => t * t * t,
+    easeOutCubic: t => --t * t * t + 1,
+    easeInOutCubic: t => t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1,
+    easeInQuart: t => t * t * t * t,
+    easeOutQuart: t => 1 - --t * t * t * t,
+    easeInOutQuart: t => t < .5 ? 8 * t * t * t * t : 1 - 8 * --t * t * t * t,
+    easeInQuint: t => t * t * t * t * t,
+    easeOutQuint: t => 1 + --t * t * t * t * t,
+    easeInOutQuint: t => t < .5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t
+  }
+
+  function interpolate(startValue, endValue, startTime, duration, easingFunction) {
+    return startValue + (endValue - startValue) * Easing[easingFunction]((performance.now() - startTime) / duration)
+  }
+
+  function animate(startVal, endVal, duration, easingFunction, callback) {
+
+    let cancel = false
+    let startTime = performance.now()
+    let endTime = startTime + duration
+
+    let update = timestamp => {
+      if (cancel) { return }
+      callback(interpolate(startVal, endVal, startTime, duration, easingFunction))
+      if (timestamp < endTime)
+        window.requestAnimationFrame(update)
+    }
+
+    window.requestAnimationFrame(update)
+
+    return {
+      cancel: () => {
+        cancel = true
+        callback(endVal)
+      }
+    }
+
+  }
+
   function debounce(func, waitPeriod) {
     let timeout;
     return function() {
@@ -153,6 +197,7 @@ const Swish = {};
       this.context.fillText(lineContent, 0, lineIndex * this.settings['line_height'] - this.state.scroll.y / this.settings.scale)
     }
     scroll(pixels) {
+      if (Math.abs(pixels) < 1) { return }
       pixels = Math.max(-this.state.scroll.y, pixels)
       pixels = Math.min((this.document.length() - 1) * this.settings.scale * this.settings['line_height'] - this.state.scroll.y, pixels)
       this.state.scroll.y += pixels
@@ -163,19 +208,25 @@ const Swish = {};
     onKeyDown(ev) {
       switch (ev.keyCode) {
         case 38:
-          this.scroll(-this.settings['line_height'])
+          // this.scroll(-this.settings['line_height'])
           // this.scroll(this.settings['line_height'] * 2.5)
-          // this.scroll(1)
+          this.scroll(1)
           break;
         case 40:
-          this.scroll(this.settings['line_height'])
+          // this.scroll(this.settings['line_height'])
           // this.scroll(-this.settings['line_height'] * 2.5)
-          // this.scroll(-1)
+          this.scroll(-1)
           break;
       }
     }
     onScroll(ev) {
-      this.scroll(ev.deltaY)
+      // this.scroll(ev.deltaY)
+      if (this.scrollAnimation)
+        this.scrollAnimation.cancel()
+
+      this.scrollAnimation = animate(this.state.scroll.y, this.state.scroll.y + ev.deltaY, 200, 'easeOutQuint', targetScroll => {
+        this.scroll(Math.round(targetScroll - this.state.scroll.y))
+      })
     }
     onResize(ev) {
       let bounds = this.canvas.getBoundingClientRect()
