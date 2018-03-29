@@ -2,18 +2,15 @@
 
   class Renderer {
 
-    constructor(canvasElement, scale) {
+    constructor(canvasElement) {
       this.canvas = canvasElement
       this.context = canvasElement.getContext('2d')
-      this.context.save()
-      this.context.scale(scale, scale)
     }
 
     scrollDocument(editor, pixels) {
       if (Math.abs(pixels) < 1) { return }
       this.context.putImageData(this.context.getImageData(0, 0, this.canvas.width, this.canvas.height), 0, -pixels)
       this.renderNewlyVisibleLines(editor, pixels)
-      // this.renderFrame(editor)
     }
 
     renderFrame(editor) {
@@ -26,13 +23,12 @@
     }
 
     renderDocument(editor) {
-      // editor.document.forEach(this.renderLine.bind(this, editor))
       this.renderVisibleLines(editor)
     }
 
     renderVisibleLines(editor) {
-      // this.context.save()
-      // this.context.scale(editor.settings['scale'], editor.settings['scale'])
+      this.context.save()
+      this.context.scale(editor.settings['scale'], editor.settings['scale'])
       this.context.fillStyle = editor.settings['text_color']
       let lines = editor.document.getLines()
       let startIndex = Math.floor((editor.state.scroll.y / editor.settings['scale']) / editor.settings['line_height'])
@@ -41,12 +37,12 @@
       endIndex = Math.min(lines.length - 1, endIndex)
       for (let i = startIndex; i <= endIndex; ++i)
         this.renderLine(editor, editor.document.getLine(i), i, lines)
-      // this.context.restore()
+      this.context.restore()
     }
 
     renderNewlyVisibleLines(editor, scrollPixels) {
-      // this.context.save()
-      // this.context.scale(editor.settings['scale'], editor.settings['scale'])
+      this.context.save()
+      this.context.scale(editor.settings['scale'], editor.settings['scale'])
       let canvasWidth = this.canvas.width / editor.settings['scale']
       let canvasHeight = this.canvas.height / editor.settings['scale']
       let scrollY, s = editor.state.scroll.y / editor.settings['scale']
@@ -74,12 +70,11 @@
         for (let i = Math.max(0, scrollY), l = Math.min(editor.document.length(), scrollY + linesScrolled); i < l; ++i)
           this.renderLine(editor, editor.document.getLine(i), i, editor.document.getLines())
       }
-      // this.context.restore()
+      this.context.restore()
     }
 
     renderLine(editor, lineContent, lineIndex, allLines) {
       if (lineContent === '') { return }
-      //this.context.fillText(lineContent, 0, lineIndex * this.settings['line_height'] - this.state.scroll.y / editor.settings['scale'])
       let words = lineContent.split(/\b/g)
       let x = 0
       let y = lineIndex * editor.settings['line_height'] - editor.state.scroll.y / editor.settings['scale']

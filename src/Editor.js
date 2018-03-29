@@ -10,7 +10,7 @@
         zoom: 1,
         language: new Swish.Language(),
         dpiScale: 1,
-        highDPI: true,
+        highDPI: false,
         animateScroll: true
       }
       if (this.settings.highDPI) this.settings.dpiScale = (window.devicePixelRatio || 1)
@@ -25,7 +25,7 @@
       this.document = new Swish.Document()
 
       this.canvas = this.createCanvas(this.container)
-      this.renderer = new Swish.Renderer(this.canvas, this.settings.scale)
+      this.renderer = new Swish.Renderer(this.canvas)
 
       let bounds = this.canvas.getBoundingClientRect()
       this.resize(bounds.width, bounds.height, false)
